@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import producer from '../service/producer';
+import { producer } from '../service/broker';
 
 const SensorForm = () => {
   const [tipo, setTipo] = useState('');
@@ -10,33 +10,46 @@ const SensorForm = () => {
   const [sensor, setSensor] = useState(false);
 
   const saveTopic = topic => {
-    const listTopics = localStorage.getItem('listStorage')
-      ? JSON.parse(localStorage.getItem('listStorage'))
+    const listSensor = localStorage.getItem('listSensor')
+      ? JSON.parse(localStorage.getItem('listSensor'))
       : [];
 
-    if (!listTopics.includes(topic)) {
-      listTopics.push(topic);
-      localStorage.setItem('listStorage', JSON.stringify(listTopics));
+    if (!listSensor.includes(topic)) {
+      listSensor.push(topic);
+      localStorage.setItem('listSensor', JSON.stringify(listSensor));
     }
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    const idSensor = localStorage.getItem('idSensor');
+    if (Number(max) < Number(min)) {
+      alert('O valor máximo deve ser maior que o valor mínimo');
+    } else {
+      const idSensor =
+        localStorage.getItem('idSensor') && localStorage.getItem('idSensor').length
+          ? Number(localStorage.getItem('idSensor')) + 1
+          : 0;
 
-    setId(idSensor ? Number(idSensor) + 1 : 0);
-    localStorage.setItem('idSensor', id.toString());
+      console.log(idSensor);
+      setId(idSensor);
 
-    saveTopic(`${tipo}-${id}`);
-    setSensor(true);
+      localStorage.setItem('idSensor', `${idSensor}`);
+
+      saveTopic(`${tipo}-${idSensor}`);
+      setSensor(true);
+    }
   };
 
   const handleValue = e => {
     e.preventDefault();
-    const ok = producer({ id, tipo, max, min, value });
 
-    if (ok) {
-      console.log('ok');
+    if (value > max || value < min) {
+      producer({
+        id,
+        tipo,
+        value,
+        message: value > max ? 'O valor está alto' : 'O valor está baixo',
+      });
     }
   };
 
