@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { producer } from '../service/broker';
 
+import './SensorForm.css';
+
 const SensorForm = () => {
   const [tipo, setTipo] = useState('');
   const [max, setMax] = useState('');
@@ -53,67 +55,81 @@ const SensorForm = () => {
     }
   };
 
-  return sensor ? (
-    <div>
-      <form onSubmit={handleValue}>
-        <label>{`Digite o valor da ${tipo}`}</label>
-        <input
-          type="text"
-          name="value"
-          value={value}
-          onChange={e => setValue(e.target.value)}
-        />
-        <button type="submit">Enviar</button>
-      </form>
-    </div>
-  ) : (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <h1>Defina o tipo de sensor:</h1>
-          <input
-            type="radio"
-            name="tipo"
-            value="temperatura"
-            onChange={e => setTipo(e.target.value)}
-          />
-          <label>Temperatura</label>
-          <input
-            type="radio"
-            name="tipo"
-            value="umidade"
-            onChange={e => setTipo(e.target.value)}
-          />
-          <label>Umidade</label>
-          <input
-            type="radio"
-            name="tipo"
-            value="velocidade"
-            onChange={e => setTipo(e.target.value)}
-          />
-          <label>Velocidade</label>
-        </div>
-
-        <div>
-          <h1>Defina os valores:</h1>
-          <label>Mínimo:</label>
+  return (
+    <div className="sensor">
+      {sensor ? (
+        <form onSubmit={handleValue}>
+          <label>{`Digite o valor da ${tipo}`}</label>
           <input
             type="text"
-            name="min"
-            value={min}
-            onChange={e => setMin(e.target.value)}
+            name="value"
+            value={value}
+            onChange={e => setValue(e.target.value)}
           />
-          <label>Máximo:</label>
-          <input
-            type="text"
-            name="max"
-            value={max}
-            onChange={e => setMax(e.target.value)}
-          />
-        </div>
+          <button className="button-submit" type="submit">
+            <span>Enviar</span>
+          </button>
+        </form>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <div className="radio-group">
+            <span className="title">Defina o tipo de sensor:</span>
+            <div className="radio-group-item">
+              <input
+                type="radio"
+                name="tipo"
+                value="temperatura"
+                onChange={e => setTipo(e.target.value)}
+              />
+              <label>Temperatura</label>
+            </div>
+            <div className="radio-group-item">
+              <input
+                type="radio"
+                name="tipo"
+                value="umidade"
+                onChange={e => setTipo(e.target.value)}
+              />
+              <label>Umidade</label>
+            </div>
+            <div className="radio-group-item">
+              <input
+                type="radio"
+                name="tipo"
+                value="velocidade"
+                onChange={e => setTipo(e.target.value)}
+              />
+              <label>Velocidade</label>
+            </div>
+          </div>
 
-        <button type="submit">Enviar</button>
-      </form>
+          <div className="field-group">
+            <span className="title">Defina os valores:</span>
+            <div className="form-field">
+              <label>Mínimo:</label>
+              <input
+                type="text"
+                name="min"
+                value={min}
+                onChange={e => setMin(e.target.value)}
+              />
+            </div>
+            <div className="form-field">
+              <label>Máximo:</label>
+              <input
+                type="text"
+                name="max"
+                value={max}
+                onChange={e => setMax(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <button className="button-submit" type="submit">
+            <span>Enviar</span>
+          </button>
+        </form>
+      )}
     </div>
   );
 };

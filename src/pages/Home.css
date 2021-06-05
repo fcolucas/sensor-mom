@@ -1,0 +1,21 @@
+.home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  width: 70%;
+  padding: 40px;
+  border: 1px solid #e4e4e4;
+}
+
+.button-client {
+  background: #5ca934;
+  border-color: #478228 #478228 #3c6f22;
+  background-image: linear-gradient(to bottom, #69c03b, #5ca934 66%, #54992f);
+}
+
+.button-sensor {
+  background: #d5452f;
+  border-color: #ae3623 #ae3623 #992f1f;
+  background-image: linear-gradient(to bottom, #da5c48, #d5452f 66%, #c73d28);
+}
