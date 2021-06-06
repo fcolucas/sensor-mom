@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { consumer } from '../service/broker';
 import Stomp from 'stompjs';
 
+import './Client.css';
+
 const Client = () => {
-  //  const body = consumer();
   const [message, setMessage] = useState({});
   const [topic, setTopic] = useState('');
 
@@ -23,7 +23,7 @@ const Client = () => {
           client.subscribe(`/topic/${topic}`, (message, headers) => {
             const msg = JSON.parse(message.body);
             console.log(msg);
-            setMessage({ message: msg.message, value: msg.value });
+            setMessage({ type: msg.tipo, message: msg.message, value: msg.value });
           });
         }
       });
@@ -31,30 +31,39 @@ const Client = () => {
   }, [topic]);
 
   return (
-    <div>
-      <h1>Lista de tópicos:</h1>
-      {!!destinations ? (
-        <ul>
-          {destinations.map((destination, index) => (
-            <li key={index} onClick={() => setTopic(destination)}>
-              {destination}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div>
-          <span>Cliente preparado para receber mensagens</span>
-        </div>
-      )}
-
-      <div>
-        {message ? (
+    <div className="client">
+      <div className="list-topic">
+        <span className="title">Lista de tópicos:</span>
+        {!!destinations ? (
+          <ul>
+            {destinations.map((destination, index) => (
+              <li
+                className={`list-topic-item${topic === destination ? '-selected' : ''}`}
+                key={index}
+                onClick={() => setTopic(destination)}
+              >
+                <span>{destination}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
           <div>
-            <p>{message.message}</p>
-            <p>{message.value}</p>
+            <span>Cliente preparado para receber mensagens</span>
+          </div>
+        )}
+      </div>
+
+      <div className="message">
+        {topic && message.value ? (
+          <div className="topic">
+            <span className="type">{message.type}</span>
+            <span className="value">{message.value}</span>
+            <span
+              className={`message-${message.message === 'alto' ? 'high' : 'low'}`}
+            >{`O valor está ${message.message}`}</span>
           </div>
         ) : (
-          <p>Aguardando nova mensagem</p>
+          <span className="wait">Aguardando nova mensagem</span>
         )}
       </div>
     </div>
