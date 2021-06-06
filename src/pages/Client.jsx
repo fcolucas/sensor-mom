@@ -33,13 +33,19 @@ const Client = () => {
   return (
     <div>
       <h1>Lista de tópicos:</h1>
-      <ul>
-        {destinations.map((destination, index) => (
-          <li key={index} onClick={() => setTopic(destination)}>
-            {destination}
-          </li>
-        ))}
-      </ul>
+      {!!destinations ? (
+        <ul>
+          {destinations.map((destination, index) => (
+            <li key={index} onClick={() => setTopic(destination)}>
+              {destination}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div>
+          <span>Cliente preparado para receber mensagens</span>
+        </div>
+      )}
 
       <div>
         {message ? (

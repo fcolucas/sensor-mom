@@ -8,7 +8,7 @@ const SensorForm = () => {
   const [max, setMax] = useState('');
   const [min, setMin] = useState('');
   const [value, setValue] = useState('');
-  const [id, setId] = useState(0);
+  const [id, setId] = useState('');
   const [sensor, setSensor] = useState(false);
 
   const saveTopic = topic => {
@@ -27,30 +27,28 @@ const SensorForm = () => {
     if (Number(max) < Number(min)) {
       alert('O valor máximo deve ser maior que o valor mínimo');
     } else {
-      const idSensor =
-        localStorage.getItem('idSensor') && localStorage.getItem('idSensor').length
-          ? Number(localStorage.getItem('idSensor')) + 1
-          : 0;
-
-      console.log(idSensor);
-      setId(idSensor);
-
-      localStorage.setItem('idSensor', `${idSensor}`);
-
-      saveTopic(`${tipo}-${idSensor}`);
       setSensor(true);
     }
   };
 
   const handleValue = e => {
     e.preventDefault();
+    if (Number(value) > Number(max) || Number(value) < Number(min)) {
+      if (!localStorage.getItem('idSensor') || id !== localStorage.getItem('idSensor')) {
+        const idSensor = localStorage.getItem('idSensor')
+          ? Number(localStorage.getItem('idSensor')) + 1
+          : 0;
+        setId(`${idSensor}`);
 
-    if (value > max || value < min) {
+        localStorage.setItem('idSensor', `${idSensor}`);
+
+        saveTopic(`${tipo}-${idSensor}`);
+      }
       producer({
         id,
         tipo,
         value,
-        message: value > max ? 'O valor está alto' : 'O valor está baixo',
+        message: Number(value) > Number(max) ? 'O valor está alto' : 'O valor está baixo',
       });
     }
   };
@@ -59,13 +57,17 @@ const SensorForm = () => {
     <div className="sensor">
       {sensor ? (
         <form onSubmit={handleValue}>
-          <label>{`Digite o valor da ${tipo}`}</label>
-          <input
-            type="text"
-            name="value"
-            value={value}
-            onChange={e => setValue(e.target.value)}
-          />
+          <div className="field-group">
+            <div className="form-field">
+              <label>{`Digite o valor da ${tipo}:`}</label>
+              <input
+                type="text"
+                name="value"
+                value={value}
+                onChange={e => setValue(e.target.value)}
+              />
+            </div>
+          </div>
           <button className="button-submit" type="submit">
             <span>Enviar</span>
           </button>
