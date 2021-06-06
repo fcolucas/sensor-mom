@@ -8,47 +8,58 @@ const SensorForm = () => {
   const [max, setMax] = useState('');
   const [min, setMin] = useState('');
   const [value, setValue] = useState('');
-  const [id, setId] = useState('');
+  const [id, setId] = useState(0);
   const [sensor, setSensor] = useState(false);
 
-  const saveTopic = topic => {
+  const saveTopic = (topic, id) => {
     const listSensor = localStorage.getItem('listSensor')
       ? JSON.parse(localStorage.getItem('listSensor'))
       : [];
 
-    if (!listSensor.includes(topic)) {
-      listSensor.push(topic);
-      localStorage.setItem('listSensor', JSON.stringify(listSensor));
+    listSensor.push(`${topic}-${id}`);
+
+    localStorage.setItem('idSensor', id.toString());
+    localStorage.setItem('listSensor', JSON.stringify(listSensor));
+  };
+
+  const getIdSensor = () => {
+    const idSensor = localStorage.getItem('idSensor');
+    if (idSensor === null) {
+      return 0;
     }
+    return Number(idSensor) + 1;
+  };
+
+  const getTopic = (id, tipo) => {
+    return (
+      localStorage.getItem('listSensor') &&
+      JSON.parse(localStorage.getItem('listSensor')).includes(`${tipo}-${id}`)
+    );
   };
 
   const handleSubmit = e => {
     e.preventDefault();
+
     if (Number(max) < Number(min)) {
       alert('O valor máximo deve ser maior que o valor mínimo');
     } else {
+      setId(getIdSensor());
       setSensor(true);
     }
   };
 
   const handleValue = e => {
     e.preventDefault();
+
     if (Number(value) > Number(max) || Number(value) < Number(min)) {
-      if (!localStorage.getItem('idSensor') || id !== localStorage.getItem('idSensor')) {
-        const idSensor = localStorage.getItem('idSensor')
-          ? Number(localStorage.getItem('idSensor')) + 1
-          : 0;
-        setId(`${idSensor}`);
-
-        localStorage.setItem('idSensor', `${idSensor}`);
-
-        saveTopic(`${tipo}-${idSensor}`);
+      if (!getTopic(id, tipo)) {
+        saveTopic(tipo, id);
       }
       producer({
         id,
         tipo,
         value,
-        message: Number(value) > Number(max) ? 'O valor está alto' : 'O valor está baixo',
+        message: Number(value) > Number(max) ? 'alto' : 'baixo',
       });
     }
   };
@@ -56,22 +67,30 @@ const SensorForm = () => {
   return (
     <div className="sensor">
       {sensor ? (
-        <form onSubmit={handleValue}>
-          <div className="field-group">
-            <div className="form-field">
-              <label>{`Digite o valor da ${tipo}:`}</label>
-              <input
-                type="text"
-                name="value"
-                value={value}
-                onChange={e => setValue(e.target.value)}
-              />
-            </div>
+        <div className="sensor-send">
+          <div className="infos">
+            <span>{`Tipo de sensor: ${tipo}`}</span>
+            <span>{`Valor mínimo: ${min}`}</span>
+            <span>{`Valor máximo: ${max}`}</span>
+            <span>{value && `Valor corrente: ${value}`}</span>
           </div>
-          <button className="button-submit" type="submit">
-            <span>Enviar</span>
-          </button>
-        </form>
+          <form onSubmit={handleValue}>
+            <div className="field-group">
+              <div className="form-field">
+                <label>{`Digite o valor da ${tipo}:`}</label>
+                <input
+                  type="text"
+                  name="value"
+                  value={value}
+                  onChange={e => setValue(e.target.value)}
+                />
+              </div>
+            </div>
+            <button className="button-submit" type="submit">
+              <span>Enviar</span>
+            </button>
+          </form>
+        </div>
       ) : (
         <form onSubmit={handleSubmit}>
           <div className="radio-group">

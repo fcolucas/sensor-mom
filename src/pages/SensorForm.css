@@ -8,6 +8,19 @@
   border: 1px solid #e4e4e4;
 }
 
+.infos {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  margin-right: 20px;
+}
+
+.sensor-send {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .radio-group {
   display: flex;
   flex-direction: column;
