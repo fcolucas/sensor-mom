@@ -51,17 +51,25 @@ const SensorForm = () => {
   const handleValue = e => {
     e.preventDefault();
 
-    if (Number(value) > Number(max) || Number(value) < Number(min)) {
-      if (!getTopic(id, tipo)) {
-        saveTopic(tipo, id);
-      }
-      producer({
-        id,
-        tipo,
-        value,
-        message: Number(value) > Number(max) ? 'alto' : 'baixo',
-      });
+    if (!getTopic(id, tipo)) {
+      saveTopic(tipo, id);
     }
+
+    let message;
+    if (Number(value) > Number(max)) {
+      message = 'alto';
+    } else if (Number(value) < Number(min)) {
+      message = 'baixo';
+    } else {
+      message = 'normal';
+    }
+
+    producer({
+      id,
+      tipo,
+      value,
+      message,
+    });
   };
 
   return (

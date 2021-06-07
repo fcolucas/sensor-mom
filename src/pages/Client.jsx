@@ -59,7 +59,7 @@ const Client = () => {
             <span className="type">{message.type}</span>
             <span className="value">{message.value}</span>
             <span
-              className={`message-${message.message === 'alto' ? 'high' : 'low'}`}
+              className={`message${message.message === 'alto' ? '-high' : '-low'}`}
             >{`O valor está ${message.message}`}</span>
           </div>
         ) : (
